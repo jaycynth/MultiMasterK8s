@@ -1,12 +1,7 @@
-resource "aws_subnet" "k8s_subnet" {
-  count                   = var.subnet_count 
-  vpc_id                  = var.vpc_id 
-  cidr_block              = "10.0.${count.index}.0/24"
-  availability_zone       = data.aws_availability_zones.available.names[count.index]
-  
-  map_public_ip_on_launch = true
+resource "aws_subnet" "subnet" {
+  vpc_id            = var.vpc_id
+  cidr_block        = var.cidr_block
+  availability_zone = var.availability_zone
+  map_public_ip_on_launch = var.public_ip_on_launch
 
-  tags = {
-    Name = "k8s-subnet-${count.index}"
-  }
 }

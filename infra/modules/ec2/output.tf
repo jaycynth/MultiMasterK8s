@@ -1,4 +1,3 @@
-
-output master_ips {  
- value=aws_instance.k8s_master[*].public_ip  
+output "instance_ips" {
+  value = aws_instance.instance[*].public_ip
 }

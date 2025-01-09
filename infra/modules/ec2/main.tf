@@ -1,12 +1,10 @@
-resource "aws_instance" "k8s_master" {
- count         = var.instance_count 
- ami           ="ami-12345678" # Replace with a Kubernetes-friendly AMI 
- instance_type ="t3.medium"
-
- subnet_id      =(element(var.subnet_ids, count.index))
- security_groups=[var.security_group_id]
-
- tags={
-       Name="k8s-master-${count.index}"
- }
+resource "aws_instance" "instance" {
+  ami              = var.ami
+  instance_type    = var.instance_type
+  subnet_id        = var.subnet_id
+  security_groups  = [var.security_group]
+  count            = var.instance_count
+  key_name      = var.key_pair_name
+  associate_public_ip_address = var.associate_public_ip_address
+  
 }

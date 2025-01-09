@@ -49,7 +49,7 @@ Before you begin, ensure you have the following:
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/jaycynth/MultiMasterk8s.git
-   cd k8s-multi-master-aws
+   cd terraform-k8s-cluster
    ```
 
 2. **Configure AWS credentials**:
@@ -61,10 +61,7 @@ Before you begin, ensure you have the following:
    terraform init
    ```
 
-4. **Configure the variables**:
-   Edit the `terraform.tfvars` file to customize your AWS region, instance types, and other configurations.
-
-5. **Provision the infrastructure**:
+4. **Provision the infrastructure**:
    Apply the Terraform plan to create EC2 instances, VPC, and networking components.
    ```bash
    terraform apply
@@ -73,39 +70,7 @@ Before you begin, ensure you have the following:
    This will provision the 3 EC2 instances to be used as Kubernetes masters. The output will display the public IPs of these instances.
 
 ---
-
-### Step 2: Install and Configure K3s on EC2 Instances
-
-1. **SSH into each EC2 instance**:
-   Access each EC2 instance created in the previous step using the provided SSH key.
-
-2. **Install K3s**:
-   On the first master node, run the K3s installation script to install K3s and start the Kubernetes control plane with etcd:
-   ```bash
-   curl -sfL https://get.k3s.io | sh -
-   ```
-
-3. **Set Up Multi-Master Configuration**:
-   On the first master node, capture the K3s token and set the K3S_URL for the other master nodes to join the cluster:
-   ```bash
-   cat /var/lib/rancher/k3s/server/node-token
-   ```
-
-4. **Join the Other Master Nodes**:
-   On the remaining two nodes, use the token from the first node to join the cluster:
-   ```bash
-   curl -sfL https://get.k3s.io | K3S_URL=https://<MASTER_IP>:6443 K3S_TOKEN=<TOKEN> sh -
-   ```
-
-5. **Verify Cluster**:
-   Ensure that all nodes have joined the cluster and are running:
-   ```bash
-   kubectl get nodes
-   ```
-
----
-
-### Step 3: Deploy the Golang Application
+### Step 2: Deploy the Golang Application
 
 1. **Write the Golang App**:
    A simple Golang app is included in the `golang-app/` directory. The app exposes a simple HTTP endpoint.
@@ -169,14 +134,15 @@ terraform destroy
 
 ---
 
+## Cluster Design
+
+![screenshot](screenshots/multicluster.png)
+
+
+---
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## Acknowledgements
-
-- [K3s](https://k3s.io/) for providing a lightweight Kubernetes distribution.
-- [Terraform](https://www.terraform.io/) for infrastructure as code.
-- [Ansible](https://www.ansible.com/) for automation and configuration management.
