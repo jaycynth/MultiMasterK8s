@@ -73,18 +73,18 @@ Before you begin, ensure you have the following:
 ### Step 2: Deploy the Golang Application
 
 1. **Write the Golang App**:
-   A simple Golang app is included in the `golang-app/` directory. The app exposes a simple HTTP endpoint.
+   A simple Golang app is included in the `server-k8s/` directory. The app exposes a simple HTTP endpoint.
 
 2. **Containerize the App**:
    Build the Docker image for the Golang app:
    ```bash
-   cd golang-app
-   docker build -t jaycynth/golang-app .
+   cd server-k8s
+   docker build -t jaycynth/server-k8s .
    ```
 
    Push the image to Docker Hub or your container registry:
    ```bash
-   docker push jaycynth/golang-app
+   docker push jaycynth/server-k8s
    ```
 
 3. **Create Kubernetes Deployment and Service**:
@@ -110,8 +110,7 @@ Before you begin, ensure you have the following:
 2. **Run Ansible Playbooks**:
    Use Ansible to install K3s, configure the cluster, and deploy the Golang app:
    ```bash
-   ansible-playbook -i inventory.ini setup-k3s.yml
-   ansible-playbook -i inventory.ini deploy-golang-app.yml
+   ansible-playbook -i inventory.ini setup.yml
    ```
 
 ---
