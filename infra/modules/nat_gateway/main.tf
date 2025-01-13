@@ -1,9 +1,9 @@
-resource "aws_eip" "nat" {
+resource "aws_eip" "nat_eip" {
   vpc = true
 }
 
-resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.nat.id
+resource "aws_nat_gateway" "nat_gateway" {
+  allocation_id = aws_eip.nat_eip.id
   subnet_id     = var.public_subnet_id
 
   tags = {
@@ -11,12 +11,9 @@ resource "aws_nat_gateway" "nat" {
   }
 }
 
-resource "aws_route" "nat_route" {
-  route_table_id         = var.private_route_table_id
+resource "aws_route" "private_route" {
+  route_table_id     = var.private_route_table_id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.nat.id
-
-    lifecycle {
-    create_before_destroy = true
-  }
+  nat_gateway_id     = aws_nat_gateway.nat_gateway.id
 }
+

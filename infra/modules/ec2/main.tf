@@ -5,6 +5,6 @@ resource "aws_instance" "instance" {
   security_groups  = [var.security_group]
   count            = var.instance_count
   key_name      = var.key_pair_name
-  associate_public_ip_address = var.associate_public_ip_address
+  associate_public_ip_address = var.associate_public_ip
   
 }

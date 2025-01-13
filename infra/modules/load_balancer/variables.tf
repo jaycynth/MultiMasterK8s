@@ -1,6 +1,13 @@
-variable "lb_name" {
-  description = "Name of the internal load balancer"
+variable "name" {
+  description = "Name of the load balancer"
   type        = string
+  default     = "app-load-balancer"
+}
+
+variable "is_internal" {
+  description = "Whether the load balancer is internal"
+  type        = bool
+  default     = false
 }
 
 variable "security_group_ids" {
@@ -9,56 +16,47 @@ variable "security_group_ids" {
 }
 
 variable "subnet_ids" {
-  description = "Subnet IDs for the load balancer"
+  description = "List of subnet IDs for the load balancer"
   type        = list(string)
 }
 
 variable "vpc_id" {
-  description = "VPC ID where the load balancer is deployed"
+  description = "VPC ID for the load balancer"
   type        = string
 }
 
 variable "target_group_name" {
   description = "Name of the target group"
   type        = string
+  default     = "app-target-group"
 }
 
-variable "health_check_path" {
-  description = "Path for the health check"
-  type        = string
-}
-
-variable "health_check_interval" {
-  description = "Interval for health checks"
+variable "target_group_port" {
+  description = "Port for the target group"
   type        = number
-  default     = 30
+  default     = 80
 }
 
-variable "health_check_timeout" {
-  description = "Timeout for health checks"
-  type        = number
-  default     = 5
-}
-
-variable "health_check_healthy_threshold" {
-  description = "Healthy threshold for health checks"
-  type        = number
-  default     = 2
-}
-
-variable "health_check_unhealthy_threshold" {
-  description = "Unhealthy threshold for health checks"
-  type        = number
-  default     = 2
-}
-
-variable "health_check_protocol" {
-  description = "Protocol for health checks"
+variable "target_group_protocol" {
+  description = "Protocol for the target group"
   type        = string
   default     = "HTTP"
 }
 
-variable "target_ids" {
-  description = "List of target IDs (master node instance IDs)"
-  type        = list(string)
+variable "target_type" {
+  description = "Target type for the target group (e.g., instance, ip)"
+  type        = string
+  default     = "instance"
+}
+
+variable "listener_port" {
+  description = "Port for the load balancer listener"
+  type        = number
+  default     = 80
+}
+
+variable "listener_protocol" {
+  description = "Protocol for the load balancer listener"
+  type        = string
+  default     = "HTTP"
 }

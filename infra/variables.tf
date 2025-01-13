@@ -1,67 +1,87 @@
-# AWS provider and region
+
 variable "aws_region" {
-  default = "eu-west-1"
+  description = "AWS Region"
+  type        = string
+  default     = "eu-west-1"
 }
 
-# VPC CIDR block
 variable "vpc_cidr_block" {
-  default = "10.0.0.0/16"
+  description = "CIDR block for the VPC"
+  type        = string
+  default     = "10.0.0.0/16"
 }
 
-# Instance types
+variable "public_subnet_cidr" {
+  description = "CIDR block for the public subnet"
+  type        = string
+  default     = "10.0.1.0/24"
+}
+
+variable "private_subnet_cidr" {
+  description = "CIDR block for the private subnet"
+  type        = string
+  default     = "10.0.2.0/24"
+}
+
+variable "availability_zone1" {
+  description = "Availability zone for the public subnet"
+  type        = string
+  default     = "eu-west-1a"
+}
+
+variable "availability_zone2" {
+  description = "Availability zone for the private subnet"
+  type        = string
+  default     = "eu-west-1b"
+}
+
 variable "bastion_instance_type" {
-  default = "t2.micro"
+  description = "Instance type for the bastion host"
+  type        = string
+  default     = "t2.micro"
+}
+
+variable "bastion_ami" {
+  description = "AMI for the bastion host"
+  type        = string
+    default = "ami-0a094c309b87cc107"
+
 }
 
 variable "master_instance_type" {
-  default = "t2.medium"
-}
-
-variable "worker_instance_type" {
-  default = "t2.medium"
-}
-
-# AMIs
-variable "bastion_ami" {
-  default = "ami-0a094c309b87cc107" 
+  description = "Instance type for the master nodes"
+  type        = string
+  default     = "t2.medium"
 }
 
 variable "master_ami" {
-  default = "ami-0a094c309b87cc107" 
+  description = "AMI for the master nodes"
+  type        = string
+    default = "ami-0a094c309b87cc107"
+
+}
+
+variable "master_count" {
+  description = "Number of master nodes"
+  type        = number
+  default     = 3
+}
+
+variable "worker_instance_type" {
+  description = "Instance type for the worker nodes"
+  type        = string
+  default     = "t2.medium"
 }
 
 variable "worker_ami" {
-  default = "ami-0a094c309b87cc107" 
-}
-
-# Node counts
-variable "master_count" {
-  default = 3
+  description = "AMI for the worker nodes"
+  type        = string
+  default = "ami-0a094c309b87cc107"
 }
 
 variable "worker_count" {
-  default = 2
+  description = "Number of worker nodes"
+  type        = number
+  default     = 2
 }
 
-variable "bastion_count" {
-  default = 1
-}
-
-variable "availability_zones" {
-  type = list(string)
-  default = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
-}
-
-
-
-variable "public_subnet_cidrs" {
-  description = "List of CIDR blocks for the public subnets"
-  type        = list(string)
-  default     = ["10.0.1.0/24"] 
-}
-
-variable "private_subnet_cidrs" {
-  description = "List of CIDR blocks for the private subnets"
-  type        = list(string)
-  default     = ["10.0.2.0/24"]
-}

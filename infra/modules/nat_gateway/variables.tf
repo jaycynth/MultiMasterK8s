@@ -1,14 +1,15 @@
-variable "name" {
-  description = "Name for the NAT Gateway"
-  type        = string
-}
-
 variable "public_subnet_id" {
-  description = "The public subnet ID where the NAT Gateway will be deployed"
+  description = "ID of the public subnet where the NAT Gateway will be deployed"
   type        = string
 }
 
 variable "private_route_table_id" {
-  description = "The private route table ID to associate the NAT Gateway"
+  description = "ID of the route table for private subnets"
   type        = string
+}
+
+variable "name" {
+  description = "Name of the NAT Gateway"
+  type        = string
+  default     = "k8s-nat-gateway"
 }

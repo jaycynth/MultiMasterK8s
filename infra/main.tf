@@ -3,45 +3,9 @@ provider "aws" {
   profile = "jaycynth"
 }
 
-
 module "vpc" {
   source     = "./modules/vpc"
   cidr_block = var.vpc_cidr_block
-}
-
-
-module "networking" {
-  source              = "./modules/networking"
-  vpc_id              = module.vpc.vpc_id
-  igw_name            = "k8s-internet-gateway"
-  subnet_name_prefix  = "k8s"
-  public_subnet_ids   = module.public_subnet.subnet_ids
-  private_subnet_ids  = module.private_subnet.subnet_ids
-  nat_gateway_id      = module.nat_gateway.nat_gateway_id
-}
-
-
-module "public_subnet" {
-  source              = "./modules/public_subnet"
-  vpc_id              = module.vpc.vpc_id
-  cidr_blocks         = var.public_subnet_cidrs
-  availability_zones  = var.availability_zones
-  subnet_name_prefix  = "k8s"
-}
-
-module "private_subnet" {
-  source              = "./modules/private_subnet"
-  vpc_id              = module.vpc.vpc_id
-  cidr_blocks         = var.private_subnet_cidrs
-  availability_zones  = var.availability_zones
-  subnet_name_prefix  = "k8s"
-}
-
-
-
-module "security_groups" {
-  source = "./modules/security_group"
-  vpc_id = module.vpc.vpc_id
 }
 
 module "key_pair" {
@@ -51,59 +15,85 @@ module "key_pair" {
   rsa_bits      = 4096
 }
 
+module "public_subnet" {
+  source        = "./modules/subnet"
+  vpc_id        = module.vpc.vpc_id
+  cidr_block    = var.public_subnet_cidr
+  availability_zone = var.availability_zone1
+  is_public     = true
+}
+
+module "private_subnet" {
+  source        = "./modules/subnet"
+  vpc_id        = module.vpc.vpc_id
+  cidr_block    = var.private_subnet_cidr
+  availability_zone = var.availability_zone2
+  is_public     = false
+}
+
+module "internet_gateway" {
+  source          = "./modules/internet_gateway"
+  vpc_id          = module.vpc.vpc_id
+  route_table_id  = module.public_subnet.route_table_id
+}
+
 module "nat_gateway" {
   source               = "./modules/nat_gateway"
-  name                 = "k8s-nat-gateway"
-  public_subnet_id     = module.public_subnet.subnet_ids
-  private_route_table_id = module.networking.private_route_table_id
+  public_subnet_id     = module.public_subnet.subnet_id
+  private_route_table_id = module.private_subnet.route_table_id
+}
 
+module "security_groups" {
+  source = "./modules/security_group"
+  vpc_id = module.vpc.vpc_id
 }
 
 module "bastion" {
   source         = "./modules/ec2"
   instance_type  = var.bastion_instance_type
   ami            = var.bastion_ami
-  subnet_id      = module.public_subnet.subnet_ids
+  subnet_id      = module.public_subnet.subnet_id
   security_group = module.security_groups.bastion_sg_id
-  count = var.bastion_count
-  associate_public_ip_address = true
-  key_pair_name = module.key_pair.key_pair_name
-
+  associate_public_ip = true
+  count = 1
 }
-
-
 
 module "master_nodes" {
   source         = "./modules/ec2"
   instance_type  = var.master_instance_type
   ami            = var.master_ami
-  subnet_id      = module.private_subnet.subnet_ids
+  subnet_id      = module.private_subnet.subnet_id
   security_group = module.security_groups.allow_all_sg_id
+  associate_public_ip = false
   count          = var.master_count
-  key_pair_name = module.key_pair.key_pair_name
-  associate_public_ip_address = false
+  
 }
-
 
 module "worker_nodes" {
   source         = "./modules/ec2"
   instance_type  = var.worker_instance_type
   ami            = var.worker_ami
-  subnet_id      = module.private_subnet.subnet_ids
+  subnet_id      = module.private_subnet.subnet_id
   security_group = module.security_groups.allow_all_sg_id
+  associate_public_ip = false
   count          = var.worker_count
-    key_pair_name = module.key_pair.key_pair_name
-  associate_public_ip_address = false
-
 }
 
-module "internal_lb" {
-  source              = "./modules/load_balancer"
-  lb_name             = "k8s-internal-lb"
+module "k8s_lb" {
+  source = "./modules/load_balancer"
+
+  name                = "k8s-internal-lb"
+  is_internal         = true
   security_group_ids  = [module.security_groups.allow_all_sg_id]
-  subnet_ids          = module.private_subnet.subnet_ids
+  subnet_ids          = [
+    module.public_subnet.subnet_id,
+    module.private_subnet.subnet_id
+  ]
   vpc_id              = module.vpc.vpc_id
-  target_group_name   = "k8s-api-target-group"
-  health_check_path   = "/healthz"
-  target_ids          = [for instance in module.master_nodes : instance.id]
+  target_group_name   = "k8s-target-group"
+  target_group_port   = 6443
+  target_group_protocol = "TCP"
+  listener_port       = 6443
+  listener_protocol   = "TCP"
 }
+
