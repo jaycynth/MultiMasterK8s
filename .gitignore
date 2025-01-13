@@ -8,3 +8,6 @@ infra/terraform.tfstate
 infra/terraform.tfstate.backup
 
 infra/modules/key_pair/k8s_key.pem
+
+
+.vscode

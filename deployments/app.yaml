@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: golang-app
+  name: server-k8s
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: golang-app
+      app: server-k8s
   template:
     metadata:
       labels:
-        app: golang-app
+        app: server-k8s
     spec:
       containers:
-      - name: golang-app
-        image: jaycynth/golang-app:latest
+      - name: server-k8s
+        image: jaycynth/server-k8s:v0.1
         ports:
         - containerPort: 8080
 
@@ -22,10 +22,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: golang-app-service
+  name: server-k8s
 spec:
   selector:
-    app: golang-app
+    app: server-k8s
   ports:
     - protocol: TCP
       port: 8080

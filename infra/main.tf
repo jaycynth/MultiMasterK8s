@@ -21,6 +21,7 @@ module "public_subnet" {
   cidr_block    = var.public_subnet_cidr
   availability_zone = var.availability_zone1
   is_public     = true
+  name = "k8s-public-subnet"
 }
 
 module "private_subnet" {
@@ -29,6 +30,7 @@ module "private_subnet" {
   cidr_block    = var.private_subnet_cidr
   availability_zone = var.availability_zone2
   is_public     = false
+  name = "k8s-private-subnet"
 }
 
 module "internet_gateway" {
