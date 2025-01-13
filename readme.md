@@ -134,7 +134,7 @@ terraform destroy
 
 ---
 
-## Cluster Design
+## Architecture Design
 
 ![screenshot](screenshots/multicluster.png)
 
