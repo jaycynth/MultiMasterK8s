@@ -38,7 +38,7 @@ Before you begin, ensure you have the following:
 - An AWS account with access to EC2 and VPC services.
 - Terraform installed (v0.12 or later).
 - Ansible installed (v2.9 or later).
-- Docker installed for containerizing the Golang app.
+- Docker installed for containerizing the app.
 
 ---
 
@@ -137,11 +137,4 @@ terraform destroy
 
 ![screenshot](screenshots/multicluster.png)
 
-
----
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
 

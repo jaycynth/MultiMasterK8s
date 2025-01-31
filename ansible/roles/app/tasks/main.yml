@@ -1,0 +1,7 @@
+- name: Deploy Golang App to K3s
+  template:
+    src: app.j2
+    dest: /home/ubuntu/multimasterk8s/deployments/app.yaml
+
+- name: Apply Golang App Deployment
+  shell: kubectl apply -f /home/ubuntu/multimasterk8s/deployments/app.yaml

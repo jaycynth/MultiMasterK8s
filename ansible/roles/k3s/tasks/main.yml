@@ -1,0 +1,20 @@
+- name: Install K3s on master node (initial setup)
+  shell: |
+    curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --cluster-init" sh -
+  when: inventory_hostname in groups['masters']
+  args:
+    creates: /usr/local/bin/k3s
+
+- name: Install K3s on worker nodes
+  shell: |
+    curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="agent --server https://{{ hostvars['master-node-1']['ansible_host'] }}:6443 --token {{ k3s_token }}" sh -
+  when: inventory_hostname in groups['workers']
+  args:
+    creates: /usr/local/bin/k3s
+
+- name: Retrieve K3s join token from master node
+  shell: |
+    sudo cat /var/lib/rancher/k3s/server/node-token
+  when: inventory_hostname == "master-node-1"
+  register: k3s_token
+  changed_when: false

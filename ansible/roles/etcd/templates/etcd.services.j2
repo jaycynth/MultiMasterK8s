@@ -1,0 +1,22 @@
+[Unit]
+Description=etcd distributed key-value store
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/etcd \
+  --name {{ inventory_hostname }} \
+  --initial-advertise-peer-urls http://{{ ansible_host }}:2380 \
+  --listen-peer-urls http://{{ ansible_host }}:2380 \
+  --advertise-client-urls http://{{ ansible_host }}:2379 \
+  --listen-client-urls http://{{ ansible_host }}:2379,http://127.0.0.1:2379 \
+  --initial-cluster-token etcd-cluster-1 \
+  --initial-cluster master1=http://10.0.2.20:2380,master2=http://10.0.2.167:2380,master3=http://10.0.2.100:2380 \
+  --initial-cluster-state new \
+  --data-dir /var/lib/etcd
+
+Restart=always
+RestartSec=5
+LimitNOFILE=40000
+
+[Install]
+WantedBy=multi-user.target
