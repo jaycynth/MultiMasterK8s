@@ -117,7 +117,10 @@ Before you begin, ensure you have the following:
 
 ## Fault Tolerance and High Availability
 
-- **Etcd Distributed Cluster**: The etcd service is set up with 3 nodes, utilizing the Raft consensus algorithm to ensure that the cluster can tolerate the failure of one master node.
+- **Etcd Distributed Cluster**: 
+  - I deployed  3 control plane nodes (should be an odd-number configuration to maintain quorum).
+  - The etcd service is set up with the 3 nodes, utilizing the Raft consensus algorithm to ensure that the cluster can tolerate the failure of one master node.
+- **Load Balancer for API Server**: Use an internal load balancer to distribute requests to the API servers
 - **Leader Election**: If the leader node fails, the remaining nodes will automatically elect a new leader.
 - **API Server Redirection**: Each master node’s API server communicates with the etcd leader, ensuring high availability for the control plane.
 
