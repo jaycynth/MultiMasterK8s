@@ -23,7 +23,7 @@ The goal of this project is to:
 - **Fault Tolerance**: The etcd service operates in a distributed cluster using the Raft consensus algorithm, which allows the system to tolerate the failure of one master node.
 - **API Server & Etcd Integration**: The API server on each master communicates directly with the etcd instance on the same node, ensuring high availability and automatic leader election if the current leader fails.
 
-### Golang App Deployment
+### App Deployment
 - A simple Golang app is containerized using Docker and deployed on the Kubernetes cluster via Kubernetes Deployment and Service resources.
 
 ### Automation

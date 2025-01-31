@@ -3,8 +3,6 @@ resource "aws_security_group" "allow_all" {
   description = "Allow all inbound and outbound traffic"
   vpc_id  = var.vpc_id
 
-
-
 }
 
 resource "aws_security_group" "bastion_sg" {
